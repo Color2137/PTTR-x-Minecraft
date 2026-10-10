@@ -27,7 +27,9 @@ so if you have 0 hearts you just die in PTTR or if you hit many times the enemy 
 instance in folder "saves" and theres where the blocks and some other minecraft stuff happens
 
 <h2>Requirements</h2>
-**Paint The Town Red:** you need newest version 1.3.4 of PTTR (well a lil older ver. might work but IDK) to have it installed on your PC then in it's files you put there the BepInEx Mod in there
+
+**Paint The Town Red**
+you need newest version 1.3.4 of PTTR (well a lil older ver. might work but IDK) to have it installed on your PC then in it's files you put there the BepInEx Mod in there
 
 **Minecraft**
 you need to have installed Minecraft Version 26.3 with Fabric and with ptrcraft-0.1.0.jar mod
