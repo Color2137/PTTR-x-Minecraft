@@ -1,6 +1,7 @@
 <h1>PTTR x Minecraft</h1>
 <img width="3338" height="1871" alt="image" src="https://github.com/user-attachments/assets/a24f5397-418d-48a0-b592-eb5c9c208a28" />
 
+Join my DC: https://discord.com/invite/mTQRUtcDMf 10min Video: https://youtu.be/U3trWrAgzT4
 Play Paint The Town Red as Minecraft Player. You carry the Minecraft's core Mechanic's as Movement,Inventory,HUD,
 etc while in PTTR you fight the npc's
 
