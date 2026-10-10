@@ -1,0 +1,24 @@
+{
+  "sheet": "hooks",
+  "about": "Every place the mod hooks into Minecraft 26.3 / Fabric API. No vanilla behaviour is replaced except where a row says so.",
+  "columns": {
+    "id": "Row id",
+    "api": "Fabric API event, registry or mixin target",
+    "purpose": "Why",
+    "system": "systems id it serves",
+    "verified": "Evidence it fires in game, or 'no'"
+  },
+  "rows": [
+    { "id": "register_block", "api": "Registry.register(BuiltInRegistries.BLOCK) ptrcraft:ptr_solid", "purpose": "The invisible collision block", "system": "level_collision", "verified": "no" },
+    { "id": "register_entity", "api": "Registry.register(BuiltInRegistries.ENTITY_TYPE) ptrcraft:brawler + FabricDefaultAttributeRegistry", "purpose": "The PTR people", "system": "npc_entity", "verified": "no" },
+    { "id": "entity_renderer", "api": "EntityRendererRegistry.register(brawler)", "purpose": "Draw people as PTR's Blockman", "system": "npc_render", "verified": "no" },
+    { "id": "level_submit", "api": "LevelRenderEvents.COLLECT_SUBMITS", "purpose": "Submit the bar's meshes each frame", "system": "level_render", "verified": "no" },
+    { "id": "title_screen", "api": "ScreenEvents.AFTER_INIT (TitleScreen)", "purpose": "Biker Bar button, PTR status line, open the bar automatically once", "system": "entry", "verified": "no" },
+    { "id": "server_started", "api": "ServerLifecycleEvents.SERVER_STARTED", "purpose": "Build the bar world (collision blocks, people) on first start", "system": "world_setup", "verified": "no" },
+    { "id": "player_join", "api": "ServerPlayConnectionEvents.JOIN", "purpose": "First join: teleport to PTR's spawn, starter hotbar", "system": "spawn_point", "verified": "no" },
+    { "id": "server_tick", "api": "ServerTickEvents.END_SERVER_TICK", "purpose": "Brawl state: join delays, reset timer", "system": "brawl_ai", "verified": "no" },
+    { "id": "player_punch", "api": "Brawler.hurtServer override (DamageSource from a player with an empty main hand)", "purpose": "PTR punch damage for bare fists", "system": "brawl_ai", "verified": "no" },
+    { "id": "command", "api": "CommandRegistrationCallback /bikerbar reset|status", "purpose": "Refill the bar, show what was read from PTR", "system": "brawl_ai", "verified": "no" },
+    { "id": "textures", "api": "TextureManager.register(Identifier, DynamicTexture)", "purpose": "PTR textures from the cache", "system": "ptr_textures", "verified": "no" }
+  ]
+}

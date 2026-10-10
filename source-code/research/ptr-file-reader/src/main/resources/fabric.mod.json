@@ -1,0 +1,20 @@
+{
+	"schemaVersion": 1,
+	"id": "ptrcraft",
+	"version": "${version}",
+	"name": "PTRCraft",
+	"description": "Minecraft inside Paint the Town Red's Biker Bar, loaded from your own copy of Paint the Town Red.",
+	"authors": ["color2644"],
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["ptrcraft.PtrCraft"],
+		"client": ["ptrcraft.client.PtrCraftClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

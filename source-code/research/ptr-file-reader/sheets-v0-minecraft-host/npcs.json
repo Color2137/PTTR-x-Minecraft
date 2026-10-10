@@ -1,0 +1,24 @@
+{
+  "sheet": "npcs",
+  "about": "One row per kind of person in the Biker Bar, keyed by the EnemySettings asset each Enemy points to in the player's copy. Their looks are never changed: outfit, face and Blockman body all come from PTR. Base numbers are this mod's; PTR's multipliers (ptr_sources.enemy_settings) are applied on top per person.",
+  "columns": {
+    "id": "Row id",
+    "ptrSettings": "EnemySettings asset name in PTR",
+    "label": "Name shown when looked at",
+    "baseHealth": "Health before PTR's health multiplier (Minecraft half-hearts)",
+    "punchDamage": "Damage of one punch before PTR's attackDamageMultiplier",
+    "reach": "Punch reach in blocks",
+    "cooldownTicks": "Ticks between punches before PTR's attackSpeedMultiplier",
+    "runSpeed": "Movement speed attribute when fighting",
+    "verified": "Evidence from the in-game check, or 'no'"
+  },
+  "rows": [
+    { "id": "biker", "ptrSettings": "SettingsBiker", "label": "Biker", "baseHealth": 10, "punchDamage": 3, "reach": 1.9, "cooldownTicks": 24, "runSpeed": 0.30, "verified": "no" },
+    { "id": "bartender", "ptrSettings": "SettingsBikerBartender", "label": "Bartender", "baseHealth": 10, "punchDamage": 3, "reach": 1.9, "cooldownTicks": 24, "runSpeed": 0.30, "verified": "no" },
+    { "id": "boss", "ptrSettings": "SettingsBikerBoss", "label": "Biker Boss", "baseHealth": 24, "punchDamage": 5, "reach": 2.1, "cooldownTicks": 22, "runSpeed": 0.31, "verified": "no" },
+    { "id": "boxer", "ptrSettings": "SettingsBoxer", "label": "Boxer", "baseHealth": 14, "punchDamage": 4, "reach": 2.0, "cooldownTicks": 14, "runSpeed": 0.33, "verified": "no" },
+    { "id": "cook", "ptrSettings": "SettingsCook", "label": "Cook", "baseHealth": 8, "punchDamage": 2, "reach": 1.9, "cooldownTicks": 26, "runSpeed": 0.28, "verified": "no" },
+    { "id": "chef", "ptrSettings": "SettingsChef", "label": "Chef", "baseHealth": 8, "punchDamage": 2, "reach": 1.9, "cooldownTicks": 26, "runSpeed": 0.28, "verified": "no" },
+    { "id": "standard", "ptrSettings": "SettingsStandard", "label": "Patron", "baseHealth": 10, "punchDamage": 3, "reach": 1.9, "cooldownTicks": 24, "runSpeed": 0.30, "verified": "no" }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "sheet": "systems",
+  "about": "Every game system the mashup touches. One row = one Java class (its javaClass). Minecraft is the host and the player; Paint the Town Red supplies the level, the people in it and their brawl rules.",
+  "columns": {
+    "id": "Row id",
+    "side": "common (pure Java, no Minecraft), server, or client",
+    "summary": "What it does",
+    "javaClass": "The class this row generates/implements, relative to mod/src/<set>/java",
+    "reads": "ptr_sources ids it reads (comma separated, '-' for none)",
+    "rules": "brawl_rules ids it implements (comma separated, '-' for none)",
+    "verifiedBy": "The oracle that proves it (bench or in-game check)",
+    "verified": "Evidence from that oracle, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "ptr_locate",
+      "side": "common",
+      "summary": "Find PTR's install folder from Steam's library folders",
+      "javaClass": "main/ptrcraft/ptr/PtrLocator.java",
+      "reads": "steam_install",
+      "rules": "-",
+      "verifiedBy": "bench locate",
+      "verified": "no"
+    },
+    {
+      "id": "bundle_read",
+      "side": "common",
+      "summary": "Read UnityFS bundles (LZ4 blocks on demand), serialized files and type trees",
+      "javaClass": "main/ptrcraft/ptr/unity/UnityBundle.java",
+      "reads": "bundle_index",
+      "rules": "-",
+      "verifiedBy": "bench index",
+      "verified": "no"
+    },
+    {
+      "id": "catalog_read",
+      "side": "common",
+      "summary": "Decode the Addressables catalog to find assets by path or GUID",
+      "javaClass": "main/ptrcraft/ptr/unity/AddressablesCatalog.java",
+      "reads": "addressables_catalog",
+      "rules": "-",
+      "verifiedBy": "bench catalog",
+      "verified": "no"
+    },
+    {
+      "id": "texture_decode",
+      "side": "common",
+      "summary": "Decode Texture2D (DXT1, DXT5, RGBA32, RGB24, ARGB32, Alpha8) to RGBA",
+      "javaClass": "main/ptrcraft/ptr/unity/TextureDecoder.java",
+      "reads": "level_textures",
+      "rules": "-",
+      "verifiedBy": "bench textures (compare with UnityPy PNG export)",
+      "verified": "no"
+    },
+    {
+      "id": "mesh_decode",
+      "side": "common",
+      "summary": "Decode Mesh vertex streams and index buffers",
+      "javaClass": "main/ptrcraft/ptr/unity/MeshDecoder.java",
+      "reads": "level_meshes",
+      "rules": "-",
+      "verifiedBy": "bench extract (triangle and vertex counts vs UnityPy)",
+      "verified": "no"
+    },
+    {
+      "id": "level_extract",
+      "side": "common",
+      "summary": "Turn the Biker Bar scene into draw batches, collision, the spawn point and the people, in Minecraft coordinates, cached per PTR build",
+      "javaClass": "main/ptrcraft/ptr/LevelExtractor.java",
+      "reads": "level_scene,level_renderers,level_meshes,level_materials,level_textures,level_colliders,player_spawn",
+      "rules": "-",
+      "verifiedBy": "bench extract + contact sheet render",
+      "verified": "no"
+    },
+    {
+      "id": "npc_extract",
+      "side": "common",
+      "summary": "Read each person's settings, appearance, pose and the Blockman rig",
+      "javaClass": "main/ptrcraft/ptr/NpcExtractor.java",
+      "reads": "enemies,enemy_settings,enemy_appearance,appearance_materials,blockman_rig,level_textures",
+      "rules": "-",
+      "verifiedBy": "bench npcs + biker contact sheet",
+      "verified": "no"
+    },
+    {
+      "id": "level_cache",
+      "side": "common",
+      "summary": "Write and read the extracted level (binary + PNGs) under <instance>/ptrcraft/cache/<buildid>",
+      "javaClass": "main/ptrcraft/level/LevelCache.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "bench extract then reload (round trip, equal counts)",
+      "verified": "no"
+    },
+    {
+      "id": "level_collision",
+      "side": "server",
+      "summary": "An invisible, unbreakable block whose shape per position is PTR's collision voxelized at 1/8 block, so Steve walks, jumps and builds on the real bar",
+      "javaClass": "main/ptrcraft/world/PtrSolidBlock.java",
+      "reads": "level_colliders",
+      "rules": "-",
+      "verifiedBy": "in-game: walk the bar, stand on the counter, place a block on a table",
+      "verified": "no"
+    },
+    {
+      "id": "world_setup",
+      "side": "server",
+      "summary": "Create the 'Paint the Town Red - Biker Bar' world (void, survival, cheats on), place the collision blocks and spawn the people once",
+      "javaClass": "main/ptrcraft/world/BarWorld.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "in-game: new world shows the bar around the player",
+      "verified": "no"
+    },
+    {
+      "id": "spawn_point",
+      "side": "server",
+      "summary": "Put the Minecraft player where PTR's player starts, facing the same way, with a starter hotbar",
+      "javaClass": "main/ptrcraft/world/SpawnPoint.java",
+      "reads": "player_spawn",
+      "rules": "-",
+      "verifiedBy": "in-game: first join lands at PTR's start",
+      "verified": "no"
+    },
+    {
+      "id": "npc_entity",
+      "side": "server",
+      "summary": "The Brawler entity: one per PTR person, with PTR's per-type numbers",
+      "javaClass": "main/ptrcraft/entity/Brawler.java",
+      "reads": "enemies,enemy_settings",
+      "rules": "knockout,death,friendly_fire,paint",
+      "verifiedBy": "in-game: 81 brawlers present after world creation",
+      "verified": "no"
+    },
+    {
+      "id": "brawl_ai",
+      "side": "server",
+      "summary": "PTR's bar brawl: calm until a fight starts, then everyone fights the player and each other",
+      "javaClass": "main/ptrcraft/entity/BrawlAi.java",
+      "reads": "-",
+      "rules": "calm_until_fight,bar_erupts,target_player,retaliate,punch,get_up,reset",
+      "verifiedBy": "in-game: punch one biker, the bar erupts; bikers hit each other",
+      "verified": "no"
+    },
+    {
+      "id": "level_render",
+      "side": "client",
+      "summary": "Draw the bar's real meshes with their PTR textures inside Minecraft's world pass",
+      "javaClass": "client/ptrcraft/client/LevelRenderer.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "in-game screenshot read",
+      "verified": "no"
+    },
+    {
+      "id": "npc_render",
+      "side": "client",
+      "summary": "Draw each brawler as PTR's Blockman with its PTR outfit and face, posed and animated (walk, punch, knocked down)",
+      "javaClass": "client/ptrcraft/client/BrawlerRenderer.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "in-game screenshot read",
+      "verified": "no"
+    },
+    {
+      "id": "ptr_textures",
+      "side": "client",
+      "summary": "Register the cached PTR textures as Minecraft textures",
+      "javaClass": "client/ptrcraft/client/PtrTextures.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "in-game screenshot read",
+      "verified": "no"
+    },
+    {
+      "id": "entry",
+      "side": "client",
+      "summary": "Read PTR in the background at start, then open the Biker Bar world straight from the title screen (button to re-enter, notice when PTR is missing)",
+      "javaClass": "client/ptrcraft/client/Entry.java",
+      "reads": "-",
+      "rules": "-",
+      "verifiedBy": "in-game: launch -> lands in the bar without clicks",
+      "verified": "no"
+    }
+  ]
+}

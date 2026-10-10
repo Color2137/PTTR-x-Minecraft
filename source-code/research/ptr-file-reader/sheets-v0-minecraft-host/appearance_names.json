@@ -1,0 +1,20 @@
+{
+  "sheet": "appearance_names",
+  "about": "PTR's EnemyAppearance enum values used by people in the Biker Bar, and the appearance asset each one names in PTR's catalog (Appearance<Name>.asset). 0 means 'use the appearance in the person's EnemySettings'.",
+  "columns": {
+    "id": "Row id",
+    "value": "Enum value stored in Enemy.eAppearance / enemyInstanceSettings.eAppearance",
+    "asset": "Appearance asset name in Assets/_PaintTheTownRed/Content/EnemyAppearances/",
+    "verified": "Evidence the asset resolves in the player's copy, or 'no'"
+  },
+  "rows": [
+    { "id": "none", "value": 0, "asset": "-", "verified": "no" },
+    { "id": "biker", "value": 11, "asset": "AppearanceBiker", "verified": "no" },
+    { "id": "biker_boss", "value": 12, "asset": "AppearanceBikerBoss", "verified": "no" },
+    { "id": "boxer", "value": 15, "asset": "AppearanceBoxer", "verified": "no" },
+    { "id": "chef", "value": 16, "asset": "AppearanceChef", "verified": "no" },
+    { "id": "cook", "value": 17, "asset": "AppearanceCook", "verified": "no" },
+    { "id": "biker_female", "value": 62, "asset": "AppearanceBikerFemale", "verified": "no" },
+    { "id": "biker_bartender", "value": 63, "asset": "AppearanceBikerBartender", "verified": "no" }
+  ]
+}

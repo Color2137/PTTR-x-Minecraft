@@ -1,0 +1,406 @@
+{
+  "sheet": "ptr_hooks",
+  "about": "Every place the BepInEx plugin touches Paint the Town Red 1.3.4 (Unity 2020.3.39f1, IL2CPP). member is Class.Member as in Il2CppDumper's dump.cs; preflight checks each still exists there, so a PTR update that renames one shows up before a build.",
+  "columns": {
+    "id": "Row id, referenced by systems.hooks",
+    "member": "PTR class and member (dump.cs names)",
+    "kind": "prefix (Harmony, before PTR's code), disable (component switched off while Minecraft plays), read, call, hide",
+    "purpose": "Why",
+    "system": "systems id that owns it",
+    "verified": "Evidence from a real run, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "player_find",
+      "member": "PTTRPlayer.IsLocalPlayer",
+      "kind": "call",
+      "purpose": "Find the local player object PTR spawned in the level",
+      "system": "puppet",
+      "verified": "2026-10-09 BikerBar: PTTRPlayer found, took over (log 'took over the PTR player')"
+    },
+    {
+      "id": "player_feet",
+      "member": "PTTRPlayer.GetFeetPosition",
+      "kind": "call",
+      "purpose": "Where Minecraft's player starts and how far PTR's transform sits above the feet",
+      "system": "puppet",
+      "verified": "2026-10-09: feet offset (0, 0.9, 0); Minecraft teleported to PTR spawn 4093.53 0.315 -7.79"
+    },
+    {
+      "id": "fps_controller",
+      "member": "PTTRFirstPersonController.Update",
+      "kind": "disable",
+      "purpose": "PTR's walking, jumping and head bob stop; Minecraft moves the player",
+      "system": "puppet",
+      "verified": "2026-10-09: player follows Minecraft (state: player pos = Minecraft feet + 0.9)"
+    },
+    {
+      "id": "mouse_rotators",
+      "member": "SimpleMouseRotator.LateUpdate",
+      "kind": "disable",
+      "purpose": "PTR's own mouse look stops; the plugin turns the camera with Minecraft's sensitivity",
+      "system": "puppet",
+      "verified": "2026-10-09: user looked around; camera yaw/pitch = published look"
+    },
+    {
+      "id": "weapon_attack",
+      "member": "WeaponAttack.Update",
+      "kind": "disable",
+      "purpose": "PTR's fists, kicks and weapon pickups stop; Minecraft attacks instead",
+      "system": "puppet",
+      "verified": "2026-10-09: no PTR punches; Minecraft hits land (6 hits logged)"
+    },
+    {
+      "id": "ptr_use",
+      "member": "WeaponAttack.InteractWithWeaponOrButton",
+      "kind": "call",
+      "purpose": "G = PTR's use: buttons, Beneath items and upgrades, shop pickups",
+      "system": "interact",
+      "verified": "no"
+    },
+    {
+      "id": "drop_weapon",
+      "member": "WeaponAttack.DropWeapon",
+      "kind": "call",
+      "purpose": "An ordinary PTR weapon picked up with G is dropped again (Minecraft fights)",
+      "system": "interact",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_item",
+      "member": "BeneathItemPickup.Awake",
+      "kind": "read",
+      "purpose": "Tells Beneath items (kept) from ordinary weapons (dropped) after G",
+      "system": "interact",
+      "verified": "no"
+    },
+    {
+      "id": "hands_hidden",
+      "member": "PTTRPlayer.bodyRenderers",
+      "kind": "hide",
+      "purpose": "PTR's whole player body (first-person arms and legs, third-person model, held weapon) is hidden: first person shows Minecraft's hand, F5 shows Minecraft's player model",
+      "system": "puppet",
+      "verified": "2026-10-09 screenshots ptr4/ptr5 (hands only so far; whole body hidden from 0.1.1)"
+    },
+    {
+      "id": "camera_fov",
+      "member": "CameraFOV.OnEnable",
+      "kind": "disable",
+      "purpose": "PTR sets its own FOV when this turns on; kept off so it never overrides Minecraft's FOV (sprint, potions), which the plugin sets every frame",
+      "system": "puppet",
+      "verified": "2026-10-09: camera fieldOfView 70 = Minecraft fov"
+    },
+    {
+      "id": "char_controller",
+      "member": "CharacterController.enabled",
+      "kind": "disable",
+      "purpose": "Lets the plugin place the player exactly where Minecraft's physics put it",
+      "system": "puppet",
+      "verified": "2026-10-09: no rubber-banding seen in play"
+    },
+    {
+      "id": "set_health",
+      "member": "PTTRPlayer.SetHealth",
+      "kind": "prefix",
+      "purpose": "Any loss of PTR health becomes Minecraft damage instead (Minecraft's hearts are the player's health)",
+      "system": "combat",
+      "verified": "2026-10-09: 1 PTR hit forwarded to Minecraft (combat: 1 hit on the player)"
+    },
+    {
+      "id": "get_punched",
+      "member": "PTTRPlayer.GetPunched",
+      "kind": "prefix",
+      "purpose": "Remember which person punched, so Minecraft knows where the hit came from",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "fall_damage",
+      "member": "PTTRPlayer.FallDamage",
+      "kind": "prefix",
+      "purpose": "Falls are judged by Minecraft (its fall damage)",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_damage",
+      "member": "Enemy.Damage",
+      "kind": "call",
+      "purpose": "A Minecraft hit lands through PTR's own damage: hurt sound, knockdown, death",
+      "system": "combat",
+      "verified": "2026-10-09: StoreroomGuy1 Minecraft 2.1 -> PTR 0.35, health 0.00 (down)"
+    },
+    {
+      "id": "enemy_start_combat",
+      "member": "Enemy.StartCombat",
+      "kind": "call",
+      "purpose": "The first hit starts PTR's brawl (alert range 15 m, the bar joins in)",
+      "system": "combat",
+      "verified": "2026-10-09 screenshot ptr4: brawl with paint across the bar after the first hits"
+    },
+    {
+      "id": "enemy_impact",
+      "member": "Enemy.AnimateImpact",
+      "kind": "call",
+      "purpose": "PTR's hit reaction animation",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_force",
+      "member": "Enemy.ApplyImpactForce",
+      "kind": "call",
+      "purpose": "Minecraft knockback pushes PTR's person",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_state",
+      "member": "Enemy.health",
+      "kind": "read",
+      "purpose": "Health, originalHealth, isDead, IsKnockedDown, inCombat, hips/feet/head transforms: the proxy Minecraft hits",
+      "system": "combat",
+      "verified": "2026-10-09: proxies hittable (click -> entity hits logged in Minecraft)"
+    },
+    {
+      "id": "game_paused",
+      "member": "GameManager.Paused",
+      "kind": "read",
+      "purpose": "PTR's pause menu owns the input; Minecraft holds still",
+      "system": "runner",
+      "verified": "2026-10-09: Minecraft froze while PTR was paused (2 frames in 5 s)"
+    },
+    {
+      "id": "game_in_menu",
+      "member": "GameManager.InMenu",
+      "kind": "read",
+      "purpose": "Same, for PTR's other menus",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "cursor",
+      "member": "GameManager.SetCursorAppropriate",
+      "kind": "prefix",
+      "purpose": "PTR re-locks the cursor every frame; while a Minecraft screen (inventory, chat, crafting) is open the cursor is free and visible",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "player_dead",
+      "member": "PTTRPlayer.IsDead",
+      "kind": "read",
+      "purpose": "While PTR's player is dead PTR's death camera and lose screen play out (and own the cursor)",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "load_level",
+      "member": "GameManager.LoadLevel",
+      "kind": "call",
+      "purpose": "Debug console only: load a level without clicking menus",
+      "system": "dev_bridge",
+      "verified": "2026-10-09: 'load BikerBar' loaded the level"
+    },
+    {
+      "id": "hud_panels",
+      "member": "GameHUD.LateUpdate",
+      "kind": "hide",
+      "purpose": "PTR's health bar and power icons (GameplayUICanvas/PanelGameHUD) hidden while Minecraft's HUD shows",
+      "system": "ptr_hud",
+      "verified": "2026-10-09 screenshot ptr5: PTR health bar and powers gone"
+    },
+    {
+      "id": "controls_help",
+      "member": "ControlsHelp.canvasGroup",
+      "kind": "hide",
+      "purpose": "PTR's key prompts ('Q - KICK') hidden: they describe PTR's controls",
+      "system": "ptr_hud",
+      "verified": "no"
+    },
+    {
+      "id": "colliders",
+      "member": "MeshCollider.sharedMesh",
+      "kind": "read",
+      "purpose": "PTR's level collision (boxes exact, readable meshes as triangles) for Minecraft's physics",
+      "system": "collision",
+      "verified": "2026-10-09: 590 boxes + 43 meshes (27036 tris) -> 51513 blocks in 507 regions, 1.8 s on a worker"
+    },
+    {
+      "id": "pirate_cove_night",
+      "member": "PaintTheTownRed.PirateCoveNight",
+      "kind": "read",
+      "purpose": "Pirate Cove by night is the same scene as by day: this flag gives it its own Minecraft world",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "custom_level_file",
+      "member": "LevelEditor.LevelFileToPlay",
+      "kind": "read",
+      "purpose": "The custom level being played (yours or the Workshop's): one Minecraft world per level file",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "arena_challenge",
+      "member": "Arena.CurrentChallengeIndex",
+      "kind": "read",
+      "purpose": "Which arena challenge (1st to 5th) is being played: each has its own Minecraft world (Arena1..Arena5); checked every second, as the scene stays the same",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "endless_arena",
+      "member": "GameManager.IsEndlessArena",
+      "kind": "read",
+      "purpose": "The endless arena gets its own Minecraft world even if PTR plays it in the Arena scene",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_area",
+      "member": "Beneath.CurrentArea",
+      "kind": "read",
+      "purpose": "Which Beneath area (CAV, CRY, RUI, ISL, TRI, FIR): with the floor, picks the Minecraft world (Beneath-CAV-1, ...)",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_floor",
+      "member": "Beneath.CurrentLevel",
+      "kind": "read",
+      "purpose": "Which Beneath floor: each floor of each area has its own Minecraft world; checked every second",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_trickster_room",
+      "member": "Beneath.CurrentTricksterRoom",
+      "kind": "read",
+      "purpose": "In the Trickster's area, which scenario room (Biker Bar, Disco, Prison, Pirate Cove): one world each",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_area_names",
+      "member": "Beneath.AreaNames",
+      "kind": "read",
+      "purpose": "The area's name for the Minecraft world's title",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "collider_raycast",
+      "member": "Collider.Raycast",
+      "kind": "call",
+      "purpose": "Measuring colliders PTR can't hand out (unreadable meshes, terrain): rays at that collider alone, 25 cm apart, from all six sides",
+      "system": "sampler",
+      "verified": "no"
+    },
+    {
+      "id": "character_controller",
+      "member": "CharacterController.isGrounded",
+      "kind": "read",
+      "purpose": "Character controllers are someone walking about: never level collision (only the type is used)",
+      "system": "collision",
+      "verified": "no"
+    },
+    {
+      "id": "trigger_overlap",
+      "member": "Physics.OverlapCapsuleNonAlloc",
+      "kind": "call",
+      "purpose": "The trigger zones PTR's player's capsule is in, where Minecraft put it (its CharacterController is off while Minecraft plays)",
+      "system": "triggers",
+      "verified": "no"
+    },
+    {
+      "id": "trigger_messages",
+      "member": "GameObject.SendMessage",
+      "kind": "call",
+      "purpose": "OnTriggerEnter / Stay / Exit sent as Unity would: Beneath's hub elevator and exits, portals, boss and challenge rooms, shops, pickups",
+      "system": "triggers",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_exit",
+      "member": "BeneathLevelExit.OnTriggerEnter",
+      "kind": "read",
+      "purpose": "One of the trigger handlers that need the player (Beneath's exits); reached through SendMessage",
+      "system": "triggers",
+      "verified": "no"
+    },
+    {
+      "id": "trigger_people",
+      "member": "Component.GetComponent",
+      "kind": "call",
+      "purpose": "Leaves out trigger zones PTR's people carry, walking up the parents (GetComponentInParent and Physics.GetIgnoreLayerCollision are stripped from PTR's build, so PTR's layer matrix can't be read)",
+      "system": "triggers",
+      "verified": "no"
+    },
+    {
+      "id": "beneath_transition",
+      "member": "Beneath.InTransition",
+      "kind": "read",
+      "purpose": "Beneath is between floors (its elevator ride, a portal): Minecraft doesn't take over until it's done and PTR's player is at rest",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_set_on_fire",
+      "member": "Enemy.SetOnFire",
+      "kind": "call",
+      "purpose": "Minecraft fire on a PTR person: PTR's own burning (flames, damage over time, panic), as the arena's fire does",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_on_fire",
+      "member": "Enemy.onFire",
+      "kind": "read",
+      "purpose": "Already burning: don't light again",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "is_beneath",
+      "member": "GameManager.IsBeneath",
+      "kind": "read",
+      "purpose": "Beneath's enemies get the Beneath knockback scale",
+      "system": "combat",
+      "verified": "no"
+    },
+    {
+      "id": "editor_creating",
+      "member": "LevelEditorPlay.CreatingObjects",
+      "kind": "read",
+      "purpose": "A custom level is still being built: no collision build or takeover yet",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "editor_started",
+      "member": "LevelEditorPlay.StartedPlaying",
+      "kind": "read",
+      "purpose": "A custom level has started: collision and takeover may go",
+      "system": "runner",
+      "verified": "no"
+    },
+    {
+      "id": "editor_testing",
+      "member": "LevelEditor.TestingLevel",
+      "kind": "read",
+      "purpose": "Testing from the editor plays a shared temp file: the world is named after the level being edited",
+      "system": "mapping",
+      "verified": "no"
+    },
+    {
+      "id": "editor_level_name",
+      "member": "LevelEditor.CurrentLevelSimpleName",
+      "kind": "read",
+      "purpose": "The name of the level being edited, for its Minecraft world",
+      "system": "mapping",
+      "verified": "no"
+    }
+  ]
+}

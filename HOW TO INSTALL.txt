@@ -1,0 +1,116 @@
+PTTR x MC - Minecraft inside Paint the Town Red  (PTRCraft 0.2.0)
+=====================================================================
+
+You play Paint the Town Red as a Minecraft player. PTR's levels, people, brawls, ragdolls and
+paint stay PTR's own; Minecraft is the player: its movement, hotbar, hearts, hand, blocks, mobs
+and combat. Minecraft runs hidden in the background (you only see it in Task Manager).
+
+
+WHAT YOU NEED (download these first)
+------------------------------------
+1. Paint the Town Red on Steam (made for version 1.3.4, Steam build 15837486).
+2. Minecraft: Java Edition, on a Microsoft account that owns it.
+3. Prism Launcher (free): https://prismlauncher.org/download
+   Install it, open it once and sign in: Accounts > Add Microsoft.
+4. About 4 GB of free RAM for the hidden Minecraft, and internet for the first start.
+
+
+HOW TO INSTALL
+--------------
+Step 1 - Paint the Town Red
+  a. In Steam: right-click Paint the Town Red > Manage > Browse local files.
+     A folder opens with PaintTheTownRed.exe in it.
+  b. Copy EVERYTHING that is inside the folder "1 - copy into the Paint the Town Red folder"
+     into that folder, next to PaintTheTownRed.exe:
+        BepInEx   dotnet   winhttp.dll   doorstop_config.ini   .doorstop_version
+     (.doorstop_version is a hidden-looking file starting with a dot: copy it too.)
+
+Step 2 - Minecraft (Prism Launcher)
+  a. Close Prism Launcher.
+  b. Open Prism's instances folder: press Win+R, type
+        %APPDATA%\PrismLauncher\instances
+     and press Enter. (Portable Prism: the "instances" folder next to prismlauncher.exe.)
+  c. Copy the folder "PTRCraft" (inside "2 - copy into Prism Launcher's instances folder") into it.
+     Keep its name PTRCraft: Paint the Town Red starts Minecraft by that name.
+  d. Open Prism Launcher. "PTRCraft (Minecraft inside Paint the Town Red)" is in the list.
+     Start it once yourself (double-click). Prism downloads Minecraft 26.3, Fabric and Java 25
+     (if it asks about Java, let it download it). When Minecraft's title screen shows, close it.
+
+
+HOW TO PLAY
+-----------
+Start Paint the Town Red from Steam as usual. The first start with BepInEx takes about a minute
+longer (BepInEx prepares itself for your copy of PTR once). PTR starts the hidden Minecraft by
+itself. Pick a level: a few seconds after it has loaded, your PTR player becomes the Minecraft
+player, where PTR put you.
+
+  WASD, Space, Shift, Ctrl, mouse    Minecraft movement and look
+  Left / right mouse                 attack or break / use or place
+  1-9, mouse wheel                   hotbar
+  E, Q, T, /                         inventory (the mouse cursor is free in Minecraft screens),
+                                     drop, chat, commands
+  F5                                 Minecraft's cameras (your Minecraft body in third person)
+  G                                  PTR's "use": buttons, Beneath items and upgrades, shops
+  O                                  Minecraft's pause / options menu
+  Esc                                PTR's pause menu (or closes an open Minecraft screen)
+
+- Minecraft draws its own blocks, mobs, arrows and items over PTR; PTR's walls and people hide them.
+- Hit PTR's people with anything Minecraft has; PTR's punches cost you Minecraft hearts.
+- Minecraft fire (fire, lava, campfires, Fire Aspect, Flame arrows) sets PTR's people burning.
+- Every level has its own Minecraft world (builds, inventory, mobs): PTRCraft-BikerBar,
+  PTRCraft-Disco, PTRCraft-Prison, PTRCraft-Saloon, PTRCraft-PirateCove / PirateCoveNight,
+  PTRCraft-Arena1 ... Arena5, PTRCraft-EndlessArena, each Beneath floor, each custom level.
+  They are in %APPDATA%\PrismLauncher\instances\PTRCraft\minecraft\saves.
+- Dying in Minecraft is dying in PTR (PTR's own death screen and restart).
+
+
+SETTINGS
+--------
+Paint the Town Red\BepInEx\config\dev.ptrcraft.cfg (made on the first start). For example:
+  Knockback / KnockbackBeneath     how far your hits push people (scenarios / Beneath)
+  MinecraftFireBurnsPtr            Minecraft fire sets PTR's people on fire
+  MinecraftToPtrDamage...          damage both ways
+  MinecraftDrawsWorld              who draws Minecraft's blocks and mobs (Minecraft, or PTR)
+  StartWithPTR                     turn off to start the PTRCraft instance yourself
+
+
+IF SOMETHING GOES WRONG
+-----------------------
+- Your player never turns into the Minecraft player: start PTRCraft once by hand in Prism (step 2d),
+  and check the instance folder is called exactly PTRCraft.
+- Logs: Paint the Town Red\BepInEx\LogOutput.log
+        %APPDATA%\PrismLauncher\instances\PTRCraft\minecraft\logs\latest.log
+- If PTR updates and something stops working, LogOutput.log says which part of PTR it couldn't find.
+
+
+UNINSTALL
+---------
+Delete from the Paint the Town Red folder: BepInEx, dotnet, winhttp.dll, doorstop_config.ini,
+.doorstop_version (Steam's "Verify integrity" does not remove them; your PTR saves are never
+changed). Delete the PTRCraft folder in Prism's instances folder.
+
+
+WHAT IS IN THIS FOLDER
+----------------------
+1 - copy into the Paint the Town Red folder
+    BepInEx 6.0.0-be.788 (Unity IL2CPP, x64) with the .NET runtime it needs, its settings (its
+    console window off), and the PTRCraft plugin (BepInEx\plugins\PTRCraft\PTRCraft.dll).
+    BepInEx's "interop" and "unity-libs" folders are not included: BepInEx makes them from your
+    own Paint the Town Red on the first start.
+2 - copy into Prism Launcher's instances folder
+    The PTRCraft instance: Minecraft 26.3, Fabric Loader 0.19.5, Fabric API 0.162.0+26.3 and the
+    ptrcraft mod; started hidden by PTR with 4 GB of memory. No worlds.
+source
+    The source of the plugin and the Minecraft mod, the design sheets, README.md and MODLOG.md
+    (everything that was tried and what was learned).
+
+No game files are included: you need your own Paint the Town Red and Minecraft.
+
+
+CREDITS
+-------
+SkyCraft by chasmlol (MIT, see LICENSE-SkyCraft.txt): the Minecraft mod this one is forked from.
+BepInEx (LGPL-2.1), Il2CppInterop and HarmonyX (MIT): loading the plugin into PTR.
+Fabric Loader and Fabric API (Apache-2.0). Prism Launcher (GPL-3.0).
+Paint the Town Red by South East Games; Minecraft by Mojang Studios. Not affiliated with either.
+Built with Claude Code (Anthropic) using the universal-modder toolkit, directed by color2644.

@@ -1,0 +1,79 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+// This folder's path is long; Windows tools (process working dirs, git) break past 260 characters,
+// so build output and run folders live under a short path set by PTRCRAFT_OUT (default: %TEMP%/ptrmc).
+def outRoot = file(System.getenv('PTRCRAFT_OUT') ?: "${System.getProperty('java.io.tmpdir')}/ptrmc")
+layout.buildDirectory = new File(outRoot, 'build')
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"ptrcraft" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
+	runs {
+		client {
+			runDir = new File(outRoot, 'run').absolutePath
+			// The bench reads PTR from this PC's own install; the mod finds it the same way players' copies do.
+			if (System.getenv('PTRCRAFT_BENCH')) {
+				property 'ptrcraft.bench', System.getenv('PTRCRAFT_BENCH')
+			}
+		}
+		server {
+			runDir = new File(outRoot, 'run-server').absolutePath
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from(rootProject.file("../LICENSE")) {
+		rename { "LICENSE_ptrcraft" }
+	}
+}
+
+// Plain-Java bench for the PTR reader: runs against this PC's PTR install without Minecraft.
+tasks.register('ptrBench', JavaExec) {
+	dependsOn classes
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'ptrcraft.ptr.Bench'
+	args = (project.findProperty('benchArgs') ?: '').toString().split(' ').findAll { it }
+	workingDir = outRoot
+}

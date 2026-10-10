@@ -1,0 +1,7 @@
+Files added to the Paint the Town Red folder (E:/SteamLibrary/steamapps/common/Paint the Town Red) by the BepInEx install, 2026-10-09:
+  winhttp.dll
+  doorstop_config.ini
+  .doorstop_version
+  dotnet/   (whole folder)
+  BepInEx/  (whole folder; plugins, config, interop and logs live here)
+To remove the mod completely, delete exactly those. Steam "Verify integrity" does not remove them (they are extra files, not changed game files).

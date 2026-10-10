@@ -1,0 +1,150 @@
+{
+  "sheet": "ptr_sources",
+  "about": "Everything the mod reads from the player's own Paint the Town Red install at runtime. Nothing here is shipped; each row is read on the player's PC and cached under the Minecraft instance.",
+  "columns": {
+    "id": "Row id, referenced by systems.reads",
+    "what": "What this is, in PTR's terms",
+    "unityType": "Unity class (or file kind) the data comes from",
+    "locator": "How the mod finds it without hard-coded bundle hashes (they change every PTR update)",
+    "fields": "The fields read from it",
+    "fallback": "What happens when it is missing or unreadable",
+    "verified": "Evidence that this row works on the real install (bench name + result), or 'no'"
+  },
+  "rows": [
+    {
+      "id": "steam_install",
+      "what": "Paint the Town Red's install folder",
+      "unityType": "file:appmanifest_337320.acf",
+      "locator": "Steam registry SteamPath -> steamapps/libraryfolders.vdf -> each library's steamapps/appmanifest_337320.acf -> installdir; PTRCRAFT_PTR_DIR overrides",
+      "fields": "installdir, buildid",
+      "fallback": "Title screen and in-world notice: 'Paint the Town Red isn't installed' with the Steam store link; the Biker Bar button stays disabled",
+      "verified": "no"
+    },
+    {
+      "id": "bundle_index",
+      "what": "All Addressables bundles and the serialized files (CAB-...) inside each",
+      "unityType": "file:UnityFS bundle directory",
+      "locator": "PaintTheTownRed_Data/StreamingAssets/aa/StandaloneWindows64/*.bundle, read headers only",
+      "fields": "bundle -> node names (CAB-<hash>, .resS, .resource)",
+      "fallback": "Notice 'This Paint the Town Red version can't be read' with the error, mod stays playable as plain Minecraft",
+      "verified": "no"
+    },
+    {
+      "id": "addressables_catalog",
+      "what": "Addressables catalog: asset path / GUID -> bundle",
+      "unityType": "file:catalog.json (ContentCatalogData)",
+      "locator": "PaintTheTownRed_Data/StreamingAssets/aa/catalog.json",
+      "fields": "m_InternalIds, m_KeyDataString, m_BucketDataString, m_EntryDataString",
+      "fallback": "Same notice as bundle_index",
+      "verified": "no"
+    },
+    {
+      "id": "level_scene",
+      "what": "The Biker Bar level scene",
+      "unityType": "SerializedFile (scene) + AssetBundle.m_SceneHashes",
+      "locator": "catalog key Assets/_PaintTheTownRed/Scenes/Levels/BikerBar.unity -> its bundle -> AssetBundle.m_SceneHashes -> CAB name",
+      "fields": "GameObject, Transform, MeshFilter, MeshRenderer, BoxCollider, MeshCollider, MonoBehaviour (by script class name)",
+      "fallback": "Same notice as bundle_index",
+      "verified": "no"
+    },
+    {
+      "id": "level_renderers",
+      "what": "Every visible static mesh of the bar: walls, floor, bar counter, tables, stools, bottles, pool table, lights",
+      "unityType": "MeshRenderer + MeshFilter + Transform",
+      "locator": "level_scene objects whose GameObject is active in hierarchy, renderer enabled, mesh set; skipped under Enemy, PTTRPlayer, GameplayUICanvas, ChallengeMode and trigger-only objects",
+      "fields": "m_Mesh, m_Materials, world matrix",
+      "fallback": "Level not drawn; collision still loads; notice names the failure",
+      "verified": "no"
+    },
+    {
+      "id": "level_meshes",
+      "what": "Mesh data for the renderers",
+      "unityType": "Mesh",
+      "locator": "PPtr from MeshFilter across bundles (bundle_index)",
+      "fields": "m_VertexData (channels position/normal/uv0), m_IndexBuffer, m_SubMeshes, m_StreamData (.resS)",
+      "fallback": "That renderer is skipped and counted in the extraction report",
+      "verified": "no"
+    },
+    {
+      "id": "level_materials",
+      "what": "Materials: main texture, tint colour, cutout",
+      "unityType": "Material + Shader name",
+      "locator": "PPtr from MeshRenderer.m_Materials[submesh]",
+      "fields": "_MainTex, _Color, _Cutoff, shader m_ParsedForm.m_Name",
+      "fallback": "White texture tinted with _Color",
+      "verified": "no"
+    },
+    {
+      "id": "level_textures",
+      "what": "Textures of the level and the bikers",
+      "unityType": "Texture2D",
+      "locator": "PPtr from materials; image data inline or in the bundle's .resS node",
+      "fields": "m_Width, m_Height, m_TextureFormat (DXT1, DXT5, RGBA32, RGB24, ARGB32, Alpha8), image data",
+      "fallback": "Magenta-free plain grey 2x2 texture",
+      "verified": "no"
+    },
+    {
+      "id": "level_colliders",
+      "what": "PTR's own physical collision of the bar",
+      "unityType": "BoxCollider, MeshCollider",
+      "locator": "level_scene, active + enabled + not trigger, excluding Enemy/PTTRPlayer subtrees and objects with a non-kinematic Rigidbody that are small props (bottles, glasses, balls)",
+      "fields": "m_Center, m_Size, m_Mesh, m_IsTrigger, world matrix",
+      "fallback": "No collision: the player would fall, so the world spawns a glass floor at the spawn height instead",
+      "verified": "no"
+    },
+    {
+      "id": "player_spawn",
+      "what": "Where PTR's own player starts in the Biker Bar",
+      "unityType": "MonoBehaviour PTTRPlayer + Transform",
+      "locator": "level_scene object with script class PTTRPlayer, its root Transform",
+      "fields": "m_LocalPosition, m_LocalRotation",
+      "fallback": "Centre of the level bounds",
+      "verified": "no"
+    },
+    {
+      "id": "enemies",
+      "what": "The 81 people placed in the Biker Bar",
+      "unityType": "MonoBehaviour Enemy + its Transform tree",
+      "locator": "level_scene objects with script class Enemy",
+      "fields": "enemySettings, eAppearance, sittingOnWeapon, maxSpeed, root and bone Transforms (Hips, Spine, Neck, Head, arms, legs, hands, feet)",
+      "fallback": "No bikers; notice names the failure",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_settings",
+      "what": "Per-type numbers: health and damage multipliers, knockout time, size",
+      "unityType": "MonoBehaviour EnemySettings (ScriptableObject)",
+      "locator": "PPtr Enemy.enemySettings",
+      "fields": "enemyInstanceSettings.health, attackDamageMultiplier, attackSpeedMultiplier, enemyReceivedDamageMultiplier, knockbackMultiplier, canBeKnockedDown, koTimeMin, koTimeMax, customScaleMin, customScaleMax, eAppearance, rotationSpeed",
+      "fallback": "npcs sheet defaults (multipliers 1, KO 4-7 s, scale 1)",
+      "verified": "no"
+    },
+    {
+      "id": "enemy_appearance",
+      "what": "Which outfits and faces each kind of person can have",
+      "unityType": "MonoBehaviour EnemyAppearance (ScriptableObject)",
+      "locator": "enum name (sheet appearance_names) -> catalog key Assets/_PaintTheTownRed/Content/EnemyAppearances/Appearance<Name>.asset",
+      "fields": "overrideHeadMaterial[].faceRef (AssetReference), overrideHeadMaterial[].randomBodyMaterials[].nonVoxelMaterialRef",
+      "fallback": "The Biker appearance",
+      "verified": "no"
+    },
+    {
+      "id": "appearance_materials",
+      "what": "The outfit and head materials and their textures",
+      "unityType": "Material + Texture2D",
+      "locator": "AssetReference m_AssetGUID -> catalog -> bundle -> Material",
+      "fields": "_MainTex (body atlas / head unwrap)",
+      "fallback": "First body material of the Biker appearance",
+      "verified": "no"
+    },
+    {
+      "id": "blockman_rig",
+      "what": "PTR's Blockman character: one textured box per bone, UV-mapped onto the outfit atlas",
+      "unityType": "GameObject tree + Mesh (from Blockman.FBX)",
+      "locator": "catalog key Assets/_PaintTheTownRed/Content/Art/Models/Characters/Blockman/Blockman.FBX -> AssetBundle.m_Container -> root GameObject",
+      "fields": "bone names, local transforms, box meshes (24 vertices, uv0), which boxes use the head material",
+      "fallback": "No bikers drawn (they still fight, drawn as their hitbox outline)",
+      "verified": "no"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+<Project>
+  <!-- This folder's path is long; keep obj/bin under a short path so MSBuild never hits 260 characters. -->
+  <PropertyGroup>
+    <PtrOut Condition="'$(PTRCRAFT_OUT)' != ''">$(PTRCRAFT_OUT)</PtrOut>
+    <PtrOut Condition="'$(PtrOut)' == ''">$(TEMP)\ptrmc</PtrOut>
+    <BaseIntermediateOutputPath>$(PtrOut)\plugin-obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(PtrOut)\plugin-bin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,90 @@
+{
+  "sheet": "combat_rules",
+  "about": "How a fight crosses between the two games. Numbers here are generated into ptr-plugin/src/Gen/Sheets.cs and used by Combat.cs; the tunable ones are also settings.",
+  "columns": {
+    "id": "Row id",
+    "rule": "The rule",
+    "value": "Its number",
+    "unit": "Unit",
+    "verified": "Evidence from a real run, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "proxy_range",
+      "rule": "PTR people within this distance are hittable in Minecraft",
+      "value": 64,
+      "unit": "metres",
+      "verified": "2026-10-09: people near the player hittable"
+    },
+    {
+      "id": "proxy_width",
+      "rule": "Hitbox width of a standing person",
+      "value": 0.7,
+      "unit": "blocks",
+      "verified": "2026-10-09: hits landed"
+    },
+    {
+      "id": "proxy_width_down",
+      "rule": "Hitbox width of a person lying down (knocked out or dead)",
+      "value": 1.4,
+      "unit": "blocks",
+      "verified": "no"
+    },
+    {
+      "id": "proxy_height_down",
+      "rule": "Hitbox height of a person lying down",
+      "value": 0.6,
+      "unit": "blocks",
+      "verified": "no"
+    },
+    {
+      "id": "crit_bonus",
+      "rule": "A Minecraft critical hit (falling) hits harder in PTR",
+      "value": 1.25,
+      "unit": "x",
+      "verified": "no"
+    },
+    {
+      "id": "alert_range",
+      "rule": "The first hit on a calm person starts PTR's brawl in this radius",
+      "value": 15,
+      "unit": "metres",
+      "verified": "2026-10-09: the bar joined the fight after the first hits"
+    },
+    {
+      "id": "strong_hit",
+      "rule": "Minecraft damage from which PTR plays its strong hurt sound",
+      "value": 6,
+      "unit": "Minecraft damage",
+      "verified": "no"
+    },
+    {
+      "id": "knock_force",
+      "rule": "PTR impact force per point of Minecraft knockback above an ordinary hit's (PTR's own pushes are 5-30: TestKnockbackX10/X30/Away5, Beneath melee 5, charge 10)",
+      "value": 10,
+      "unit": "PTR force",
+      "verified": "2026-10-10: at 60 per point + 20 per damage point (up to 170 a hit) PTR's people jumped ('teleporting') and Beneath's flew off"
+    },
+    {
+      "id": "knock_free",
+      "rule": "Minecraft knockback an ordinary hit has (0.4, a sprint hit 0.9): hits up to this don't push, they flinch in place as PTR's punches do",
+      "value": 0.45,
+      "unit": "Minecraft knockback",
+      "verified": "no"
+    },
+    {
+      "id": "hit_force",
+      "rule": "Force handed to PTR's Damage per (0.5 + Minecraft knockback): how hard a knocked-out body falls",
+      "value": 3,
+      "unit": "PTR force",
+      "verified": "no"
+    },
+    {
+      "id": "mc_damage_scale",
+      "rule": "SkyCraft's Minecraft side divides hurt values by this (Skyrim scale), in hundredths",
+      "value": 5,
+      "unit": "x",
+      "verified": "2026-10-09: PTR hit arrived as Minecraft damage"
+    }
+  ]
+}

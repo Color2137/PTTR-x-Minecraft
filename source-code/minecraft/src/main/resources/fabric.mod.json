@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "ptrcraft",
+  "version": "${version}",
+  "name": "PTRCraft",
+  "description": "Minecraft inside Paint the Town Red: Minecraft's player, physics, inventory and blocks, drawn and fought inside PTR. Minecraft side of the link; based on SkyCraft by chasmlol (MIT).",
+  "authors": ["color2644", "chasmlol (SkyCraft, MIT)"],
+  "contact": {
+    "sources": "https://github.com/chasmlol/SkyCraft"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "main": ["dev.ptrcraft.SkyCraft"],
+    "client": ["dev.ptrcraft.client.SkyCraftClient"]
+  },
+  "mixins": [
+    "ptrcraft.mixins.json",
+    { "config": "ptrcraft.client.mixins.json", "environment": "client" }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

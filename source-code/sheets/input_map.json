@@ -1,0 +1,110 @@
+{
+  "sheet": "input_map",
+  "about": "Where each input in PTR's window goes while Minecraft is the player. Minecraft's own keybinds apply to everything forwarded (yours, copied from your 26.3 instance).",
+  "columns": {
+    "id": "Row id",
+    "input": "The input",
+    "when": "Condition",
+    "goesTo": "minecraft, ptr, or both",
+    "how": "What happens",
+    "verified": "Evidence from a real run, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "keys",
+      "input": "every key except Esc, O and G",
+      "when": "in a level, PTR focused, no PTR menu",
+      "goesTo": "minecraft",
+      "how": "SDL scancode press/release into Minecraft's KeyboardHandler (WASD, space, shift, E, Q, 1-9, T, F5...)",
+      "verified": "2026-10-09: walking, hotbar switching seen in play"
+    },
+    {
+      "id": "mouse_buttons",
+      "input": "left / right / middle / side buttons",
+      "when": "same",
+      "goesTo": "minecraft",
+      "how": "Minecraft attack/break, use/place, pick block",
+      "verified": "2026-10-09: Minecraft log 'click 1 -> BLOCK', 'click 3 -> BLOCK'"
+    },
+    {
+      "id": "wheel",
+      "input": "mouse wheel",
+      "when": "same",
+      "goesTo": "minecraft",
+      "how": "hotbar scroll",
+      "verified": "no"
+    },
+    {
+      "id": "look",
+      "input": "mouse movement",
+      "when": "no Minecraft screen open",
+      "goesTo": "ptr",
+      "how": "PTR's camera turns at once with Minecraft's sensitivity formula; Minecraft's player follows the published yaw/pitch",
+      "verified": "2026-10-09: user looked around (yaw/pitch published)"
+    },
+    {
+      "id": "cursor",
+      "input": "mouse position",
+      "when": "a Minecraft screen is open (inventory, chat, menus)",
+      "goesTo": "minecraft",
+      "how": "cursor in overlay pixels; PTR's own cursor lock is overridden (GameManager.SetCursorAppropriate) so the OS cursor is free and visible",
+      "verified": "no"
+    },
+    {
+      "id": "text",
+      "input": "typed characters",
+      "when": "a Minecraft screen is open",
+      "goesTo": "minecraft",
+      "how": "chat and sign text",
+      "verified": "no"
+    },
+    {
+      "id": "esc",
+      "input": "Esc",
+      "when": "no Minecraft screen open",
+      "goesTo": "ptr",
+      "how": "PTR's own pause menu; Minecraft holds still while it's open",
+      "verified": "2026-10-09: PTR paused, Minecraft froze"
+    },
+    {
+      "id": "esc_close",
+      "input": "Esc",
+      "when": "a Minecraft screen is open",
+      "goesTo": "minecraft",
+      "how": "closes the Minecraft screen",
+      "verified": "no"
+    },
+    {
+      "id": "o_menu",
+      "input": "O",
+      "when": "no Minecraft screen open",
+      "goesTo": "minecraft",
+      "how": "opens Minecraft's pause/options menu (like SkyCraft)",
+      "verified": "no"
+    },
+    {
+      "id": "g_use",
+      "input": "G",
+      "when": "no Minecraft screen open",
+      "goesTo": "ptr",
+      "how": "PTR's use: press buttons, take Beneath items/upgrades, shop pickups (PTR weapons are dropped again)",
+      "verified": "no"
+    },
+    {
+      "id": "f5",
+      "input": "F5",
+      "when": "always",
+      "goesTo": "minecraft",
+      "how": "Minecraft's camera modes: first person (no body), behind, in front; PTR's camera follows with Minecraft's zoom collision and draws Minecraft's player model",
+      "verified": "no"
+    },
+    {
+      "id": "focus_lost",
+      "input": "Alt-Tab / PTR loses focus",
+      "when": "always",
+      "goesTo": "minecraft",
+      "how": "everything held is released in Minecraft",
+      "verified": "no"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+// This project's folder path is long; Windows tools break past 260 characters, so build output and
+// the dev run folder live under a short path (PTRCRAFT_OUT, default %TEMP%/ptrmc).
+def outRoot = file(System.getenv('PTRCRAFT_OUT') ?: "${System.getProperty('java.io.tmpdir')}/ptrmc")
+layout.buildDirectory = new File(outRoot, 'mc-build')
+
+loom {
+	splitEnvironmentSourceSets()
+
+	runs {
+		client {
+			runDir = new File(outRoot, 'mc-run').absolutePath
+			programArgs "--username", (System.getenv("PTRCRAFT_USERNAME") ?: "Steve")
+			vmArgs "--enable-native-access=ALL-UNNAMED", "-Dptrcraft.quitWithSkyrim=false"
+		}
+	}
+
+	mods {
+		"ptrcraft" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	testImplementation platform("org.junit:junit-bom:5.11.4")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+	useJUnitPlatform()
+	testLogging { events "passed", "failed"; exceptionFormat "full" }
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from("LICENSE-SkyCraft") {
+		rename { "LICENSE-SkyCraft_ptrcraft" }
+	}
+}

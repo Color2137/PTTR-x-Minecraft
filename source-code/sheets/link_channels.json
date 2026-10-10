@@ -1,0 +1,94 @@
+{
+  "sheet": "link_channels",
+  "about": "The shared memory Local\\PTRCraft_v1 (magic PTRC, SkyCraft protocol v11 layout): one row per channel. PTR creates the mapping; Minecraft opens it. Offsets match research/skycraft_protocol.h, ptr-plugin/src/Proto.cs and minecraft/.../link/Proto.java.",
+  "columns": {
+    "id": "Row id, referenced by systems.channels",
+    "offset": "Byte offset in the mapping",
+    "direction": "ptr->mc or mc->ptr",
+    "carries": "What travels on it",
+    "rate": "How often",
+    "verified": "Evidence from a real run, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "header",
+      "offset": "0x0",
+      "direction": "both",
+      "carries": "magic, version, both pids, both heartbeats",
+      "rate": "every frame",
+      "verified": "2026-10-09: Minecraft log 'linked to Skyrim (pid 40872)'; PTR state 'mc alive True pid 3076'"
+    },
+    {
+      "id": "host_state",
+      "offset": "0x100",
+      "direction": "ptr->mc",
+      "carries": "in level / menu / loading, who draws Minecraft's world (SkyHostDrawsWorld), level id, collision epoch, spawn feet, look yaw/pitch, teleport seq, overlay size; at +0x40 the level's key (its Minecraft world) and at +0x70 its name",
+      "rate": "every frame, capped at MinecraftMaxFps",
+      "verified": "2026-10-09: teleport ack 3/3, overlay sized to 1920x1080"
+    },
+    {
+      "id": "mc_state",
+      "offset": "0x200",
+      "direction": "mc->ptr",
+      "carries": "Minecraft player feet, eye, look, FOV, flags (on ground, sneaking, screen open, dead)",
+      "rate": "every Minecraft frame",
+      "verified": "2026-10-09: state shows Minecraft pos/eye/fov each query"
+    },
+    {
+      "id": "overlay",
+      "offset": "0x300 + pixels at 0x2020000",
+      "direction": "mc->ptr",
+      "carries": "Minecraft's frame, RGBA on a transparent background (triple buffer): its blocks, mobs, players, arrows, items, particles and F5 body behind PTR's geometry, then hand + held item + HUD + screens",
+      "rate": "every Minecraft frame",
+      "verified": "2026-10-09: 1920x1080, 1087 frames in about 25 s; screenshot ptr5"
+    },
+    {
+      "id": "input",
+      "offset": "0x1000",
+      "direction": "ptr->mc",
+      "carries": "keys (SDL scancodes), mouse buttons, wheel, cursor, typed text, release-all, hurt, open Minecraft menu",
+      "rate": "on change",
+      "verified": "2026-10-09: user played; Minecraft log shows clicks and block hits"
+    },
+    {
+      "id": "actors",
+      "offset": "0x12000",
+      "direction": "ptr->mc",
+      "carries": "PTR's people within 64 m: id, feet, yaw, box, health fraction, dead/in-combat flags",
+      "rate": "every frame",
+      "verified": "2026-10-09: Minecraft hits on people arrive as events (6 hits)"
+    },
+    {
+      "id": "events",
+      "offset": "0x17000",
+      "direction": "mc->ptr",
+      "carries": "hit on a person (damage, knockback, crit), player died, explosions",
+      "rate": "on event",
+      "verified": "2026-10-09: 6 hit events handled"
+    },
+    {
+      "id": "world_entities",
+      "offset": "0x1C000",
+      "direction": "mc->ptr",
+      "carries": "the placement cube on PTR's surfaces; with MinecraftDrawsWorld off also the targeted block's outline, arrows and tridents in flight, dropped items and blocks, block-breaking cracks",
+      "rate": "every Minecraft frame",
+      "verified": "no"
+    },
+    {
+      "id": "collision",
+      "offset": "0x20000",
+      "direction": "ptr->mc",
+      "carries": "PTR collision per 8-block region: exact triangles + 1/8-block voxels",
+      "rate": "once per level (streamed)",
+      "verified": "2026-10-09: 507/507 regions sent; Minecraft player stands on PTR's floor (y 0.00)"
+    },
+    {
+      "id": "render",
+      "offset": "0x7F0C000",
+      "direction": "mc->ptr",
+      "carries": "solid-block bits and light-emitting blocks; with MinecraftDrawsWorld off also the block atlas, section meshes, entity textures, the player model (F5) and other Minecraft entities/particles",
+      "rate": "on change",
+      "verified": "2026-10-09: atlas 2048x2576 received; section meshes not yet seen in a screenshot"
+    }
+  ]
+}

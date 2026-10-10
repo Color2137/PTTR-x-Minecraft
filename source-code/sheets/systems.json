@@ -1,0 +1,254 @@
+{
+  "sheet": "systems",
+  "about": "Every system of the mashup, one source file each. side ptr = the BepInEx plugin inside Paint the Town Red (C#); side mc = the Minecraft Fabric mod (Java, a fork of SkyCraft by chasmlol, MIT). PTR is the game on screen; Minecraft runs hidden and is the player.",
+  "columns": {
+    "id": "Row id, referenced by ptr_hooks.system",
+    "side": "ptr or mc",
+    "file": "Source file, relative to the project root",
+    "summary": "What it does",
+    "channels": "link_channels ids it reads or writes (comma separated, '-' for none)",
+    "verified": "Evidence from a real run, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "plugin",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Plugin.cs",
+      "summary": "BepInEx entry: settings, Harmony patches one class at a time, the per-frame driver",
+      "channels": "-",
+      "verified": "2026-10-09 BepInEx log: 'PTRCraft 0.1.0 loaded'"
+    },
+    {
+      "id": "settings",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Gen/Settings.g.cs",
+      "summary": "BepInEx/config/dev.ptrcraft.cfg: one entry per row of sheets/settings.json (generated)",
+      "channels": "-",
+      "verified": "2026-10-09: cfg written with every key"
+    },
+    {
+      "id": "link",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Link.cs",
+      "summary": "Creates and reads/writes the shared memory (seqlocks, rings, triple buffer)",
+      "channels": "header,host_state,mc_state,overlay,input,actors,events,world_entities,collision,render",
+      "verified": "2026-10-09: linked with the Prism Minecraft (pid 3076)"
+    },
+    {
+      "id": "runner",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Runner.cs",
+      "summary": "Per frame: heartbeat, level changes, take over / give back the player, input, pacing, overlay; the takeover waits until PTR's player is at rest (0.75 s, Beneath not in transition) and sends Minecraft there, again if PTR moves it before Minecraft arrives",
+      "channels": "header,host_state,mc_state",
+      "verified": "2026-10-09: status playing as Minecraft in BikerBar; on a level change Minecraft moved to the new level's stretch (x+12288)"
+    },
+    {
+      "id": "launcher",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Launcher.cs",
+      "summary": "Starts the PTRCraft Prism instance hidden when PTR starts, unless one is running",
+      "channels": "header",
+      "verified": "2026-10-09: started prismlauncher --launch PTRCraft; first try lost because Prism hadn't rescanned (retry added)"
+    },
+    {
+      "id": "puppet",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Puppet.cs",
+      "summary": "PTR's player follows Minecraft's player; PTR's controls off and its body hidden; camera = Minecraft's first person or F5 (behind / in front, Minecraft's zoom); PTR's own teleports (Beneath floors, portals, resets) sent to Minecraft",
+      "channels": "mc_state",
+      "verified": "2026-10-09 screenshots ptr3-ptr5"
+    },
+    {
+      "id": "input",
+      "side": "ptr",
+      "file": "ptr-plugin/src/InputCapture.cs",
+      "summary": "Keyboard and mouse in PTR's window -> Minecraft (sheets/input_map.json); mouse look with Minecraft's sensitivity",
+      "channels": "input,host_state",
+      "verified": "2026-10-09: user walked, looked, placed and broke blocks"
+    },
+    {
+      "id": "overlay",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Overlay.cs",
+      "summary": "Minecraft's hand, HUD and screens drawn over PTR's frame",
+      "channels": "overlay",
+      "verified": "2026-10-09: 1920x1080 overlay at about 45 fps; screenshot ptr5"
+    },
+    {
+      "id": "collision",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Collision.cs",
+      "summary": "PTR's colliders as Minecraft collision (exact triangles + 1/8-block voxels per 8-block region), streamed nearest the player first, built once the level has stopped changing (Beneath builds floors after loading), refreshed every 3 s; boxes and readable meshes exact, spheres and capsules tessellated; the change check ignores the player and PTR's people, and a refresh resends only regions whose content changed; regions within 160 blocks of the player, farther ones as the player gets near; the three largest colliders are logged",
+      "channels": "collision",
+      "verified": "2026-10-09: 507 regions; player walks PTR's floor and stairs"
+    },
+    {
+      "id": "sampler",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Sampler.cs",
+      "summary": "Colliders PTR can't hand out (272 unreadable meshes in Beneath's hub, terrain, other kinds) measured with PTR's own physics: Collider.Raycast on a 25 cm grid from six sides, surfaces merged into strips of triangles; 3 ms a frame, nearest first, kept per collider",
+      "channels": "collision",
+      "verified": "no"
+    },
+    {
+      "id": "world_render",
+      "side": "ptr",
+      "file": "ptr-plugin/src/WorldRender.cs",
+      "summary": "Torches and other light-emitting Minecraft blocks as PTR lights and colliders for builds (PTR's people bump into them); with MinecraftDrawsWorld off also Minecraft's block meshes, drawn with PTR's lights",
+      "channels": "render",
+      "verified": "no"
+    },
+    {
+      "id": "selection",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Selection.cs",
+      "summary": "The cube where a block will go when aiming at PTR's own surfaces (Minecraft has no block there to outline); with MinecraftDrawsWorld off also the outline of Minecraft blocks",
+      "channels": "world_entities",
+      "verified": "no"
+    },
+    {
+      "id": "world_entities",
+      "side": "ptr",
+      "file": "ptr-plugin/src/WorldEntities.cs",
+      "summary": "With MinecraftDrawsWorld off: arrows, tridents, dropped items and blocks, block-breaking cracks drawn in PTR",
+      "channels": "world_entities",
+      "verified": "no"
+    },
+    {
+      "id": "entity_meshes",
+      "side": "ptr",
+      "file": "ptr-plugin/src/EntityMeshes.cs",
+      "summary": "With MinecraftDrawsWorld off: Minecraft's player model (F5) and other entities and particles drawn as Unity meshes",
+      "channels": "render",
+      "verified": "no"
+    },
+    {
+      "id": "interact",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Interact.cs",
+      "summary": "G = PTR's use key through PTR's own interaction (buttons, Beneath items, shops)",
+      "channels": "-",
+      "verified": "no"
+    },
+    {
+      "id": "triggers",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Triggers.cs",
+      "summary": "PTR's trigger zones see the player where Minecraft is: each frame the trigger colliders its capsule overlaps get OnTriggerEnter / Stay / Exit, as do the player's own handlers; zones on PTR's people are left out (the layer matrix getter is stripped from PTR)",
+      "channels": "-",
+      "verified": "no"
+    },
+    {
+      "id": "combat",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Combat.cs",
+      "summary": "PTR's people as Minecraft proxies; Minecraft hits -> Enemy.Damage; PTR hits on the player -> Minecraft damage (sheets/combat_rules.json)",
+      "channels": "actors,events,input",
+      "verified": "2026-10-09: 6 hits on people (one down), 1 hit on the player"
+    },
+    {
+      "id": "ptr_hud",
+      "side": "ptr",
+      "file": "ptr-plugin/src/PtrHud.cs",
+      "summary": "Hides PTR's health bar, powers and key prompts while Minecraft's HUD shows",
+      "channels": "-",
+      "verified": "2026-10-09 screenshot ptr5 (health bar gone); key prompts: no"
+    },
+    {
+      "id": "mapping",
+      "side": "ptr",
+      "file": "ptr-plugin/src/Mapping.cs",
+      "summary": "PTR <-> Minecraft coordinates; which Minecraft world a PTR level plays in (PTRCraft-<key>: one per scenario, Pirate Cove day and night apart, each arena challenge 1-5 and the endless arena, Beneath's hub and each floor of each area and each Trickster's room, sandbox, each custom level)",
+      "channels": "-",
+      "verified": "2026-10-09: Minecraft feet = PTR feet (spawn teleport exact)"
+    },
+    {
+      "id": "dev_bridge",
+      "side": "ptr",
+      "file": "ptr-plugin/src/DevBridge.cs",
+      "summary": "Debug console on 127.0.0.1:47347 (scene, tree, fields, state, load)",
+      "channels": "-",
+      "verified": "2026-10-09: used throughout testing"
+    },
+    {
+      "id": "mc_link",
+      "side": "mc",
+      "file": "minecraft/src/main/java/dev/ptrcraft/link/SkyLink.java",
+      "summary": "Opens Local\\PTRCraft_v1, heartbeats, rings (SkyCraft, renamed)",
+      "channels": "header,host_state,mc_state,input,actors,events,collision,render,overlay,world_entities",
+      "verified": "2026-10-09: 'Skyrim link up' in the Prism instance log"
+    },
+    {
+      "id": "mc_client",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/SkyClient.java",
+      "summary": "Hidden window, teleports, look from PTR, frame pacing, publishes the player",
+      "channels": "host_state,mc_state",
+      "verified": "2026-10-09: 'game window hidden', teleported to PTR spawn"
+    },
+    {
+      "id": "mc_worlds",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/MirrorWorld.java",
+      "summary": "Opens or creates the Minecraft world of the PTR level PTR is in (PTRCraft-BikerBar, PTRCraft-Disco, ...), saves and switches when PTR goes to another level; the old one-world save becomes the Biker Bar's",
+      "channels": "host_state",
+      "verified": "no"
+    },
+    {
+      "id": "mc_input",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/InputBridge.java",
+      "summary": "Replays PTR's input into Minecraft's handlers",
+      "channels": "input",
+      "verified": "2026-10-09: clicks logged ('click 1 -> BLOCK')"
+    },
+    {
+      "id": "mc_frame",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/FrameExporter.java",
+      "summary": "Asynchronous GPU readback of hand + HUD into the overlay",
+      "channels": "overlay",
+      "verified": "2026-10-09: overlay frames arriving"
+    },
+    {
+      "id": "mc_world",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/render/WorldExporter.java",
+      "summary": "Ships Minecraft's block atlas and section meshes",
+      "channels": "render,world_entities",
+      "verified": "2026-10-09: atlas sent and received"
+    },
+    {
+      "id": "mc_occluders",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/render/PtrOccluders.java",
+      "summary": "PTR's collision triangles and a box per standing PTR person drawn depth-only before Minecraft's main pass, so Minecraft's things behind PTR's walls, furniture and people stay hidden",
+      "channels": "collision,actors",
+      "verified": "2026-10-10 Minecraft log: 'PTR's level hides Minecraft behind it: 27036 triangles' (Biker Bar); not yet seen on a screenshot"
+    },
+    {
+      "id": "mc_level_render",
+      "side": "mc",
+      "file": "minecraft/src/client/java/dev/ptrcraft/client/mixin/LevelRendererMixin.java",
+      "summary": "Minecraft renders its own level into the overlay: placed blocks, mobs, other players, arrows, dropped items, particles, your F5 body, block outlines and cracks, on a transparent background with no sky or clouds (skipped with MinecraftDrawsWorld off)",
+      "channels": "host_state,overlay",
+      "verified": "2026-10-10 Minecraft log: level rendered (no mixin errors), Ender Dragon hits on PTR people logged; not yet seen on a screenshot"
+    },
+    {
+      "id": "mc_collision",
+      "side": "mc",
+      "file": "minecraft/src/main/java/dev/ptrcraft/world/SkyCollision.java",
+      "summary": "Merges PTR's collision into Minecraft's collision queries",
+      "channels": "collision",
+      "verified": "2026-10-09: player stands at y 0.00 on PTR's floor"
+    },
+    {
+      "id": "mc_combat",
+      "side": "mc",
+      "file": "minecraft/src/main/java/dev/ptrcraft/combat/SkyCombat.java",
+      "summary": "Invisible hittable proxies for PTR's people; hits out, PTR hurt in",
+      "channels": "actors,events,input",
+      "verified": "2026-10-09: hits on proxies reached PTR"
+    }
+  ]
+}
