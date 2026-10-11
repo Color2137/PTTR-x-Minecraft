@@ -41,6 +41,11 @@ i use PrismLauncher for Minecraft 26.3
 <h2>Controls</h2>
 the controls are from Minecraft
 
+"G" to pickup PTTR weapons/items
+"LMB" to shoot with the PTTR guns
+"RMB" to protect your self
+"F" to throw PTTR weapons/items
+
 <h2>Source</h2>
 
 for the source code if you want to modify something you will need visual studio,C#,Java,JavaScript,.Net SDK 6+,JDK 25 but if you don't know programming that much just like me just use Claude Code or Codex
